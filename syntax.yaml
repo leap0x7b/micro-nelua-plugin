@@ -1,0 +1,152 @@
+filetype: nelua
+
+detect:
+    filename: "\\.nelua$"
+
+rules:
+    - statement: "\\b(do|end|while|break|repeat|until|if|elseif|then|else|for|in|function|local|global|return|concept)\\b"
+    - statement: "\\b(not|and|or)\\b"
+    - statement: "\\b(debug|string|math|table|io|coroutine|os|utf8|bit32)\\b\\."
+    - statement: "\\b(_ENV|_G|_VERSION|assert|collectgarbage|dofile|error|getfenv|getmetatable|ipairs|load|loadfile|module|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setfenv|setmetatable|static_assert|static_error|tonumber|tostring|type|unpack|xpcall)\\s*\\("
+    - type: "\\b(auto|boolean|number|integer|uinteger|byte|string|array|enum|record|union|pointer|void|type|c?uint|cstring|c?ushort|c?ulong|c?ulonglong|c(u|s|)char|csize|cptrdiff|clongdouble)\\b"
+    - type: "\\b((i|u)size)\\b"
+    - type: "\\b(u?int(8|16|32|64|128))\\b"
+    - type: "\\b(float(32|64|128))\\b"
+    - identifier: "io\\.\\b(close|flush|input|lines|open|output|popen|read|tmpfile|type|write)\\b"
+    - identifier: "math\\.\\b(abs|acos|asin|atan2|atan|ceil|cosh|cos|deg|exp|floor|fmod|frexp|huge|ldexp|log10|log|max|maxinteger|min|mininteger|modf|pi|pow|rad|random|randomseed|sinh|sqrt|tan|tointeger|type|ult)\\b"
+    - identifier: "os\\.\\b(clock|date|difftime|execute|exit|getenv|remove|rename|setlocale|time|tmpname)\\b"
+    - identifier: "package\\.\\b(config|cpath|loaded|loadlib|path|preload|seeall|searchers|searchpath)\\b"
+    - identifier: "string\\.\\b(byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
+    - identifier: "table\\.\\b(concat|insert|maxn|move|pack|remove|sort|unpack)\\b"
+    - identifier: "utf8\\.\\b(char|charpattern|codes|codepoint|len|offset)\\b"
+    - identifier: "coroutine\\.\\b(create|isyieldable|resume|running|status|wrap|yield)\\b"
+    - identifier: "debug\\.\\b(debug|getfenv|gethook|getinfo|getlocal|getmetatable|getregistry|getupvalue|getuservalue|setfenv|sethook|setlocal|setmetatable|setupvalue|setuservalue|traceback|upvalueid|upvaluejoin)\\b"
+    - identifier: "bit32\\.\\b(arshift|band|bnot|bor|btest|bxor|extract|replace|lrotate|lshift|rrotate|rshift)\\b"
+    - identifier: "\\:\\b(close|flush|lines|read|seek|setvbuf|write|byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
+    - identifier: "\\b(self|arg)\\b"
+    - constant.bool: "\\b(true|false)\\b"
+    - statement: "(\\b(dofile|require|include|cimport|cinclude|linklib)|%q|%!|%Q|%r|%x)\\b"
+    - constant.number: "(\\b([1-9][0-9]*|0[0-7]*|0[Xx][0-9A-Fa-f]+|0[Bb][01]+)([Uu]?[Ll][Ll]?|[Ll][Ll]?[Uu]?)?\\b)"
+    - constant.number: "(\\b(([0-9]*[.][0-9]+|[0-9]+[.][0-9]*)([Ee][+-]?[0-9]+)?|[0-9]+[Ee][+-]?[0-9]+)[FfLl]?\\b)"
+    - constant.number: "(\\b0[Xx]([0-9A-Za-z]*[.][0-9A-Za-z]+|[0-9A-Za-z]+[.][0-9A-Za-z]*)[Pp][+-]?[0-9]+[FfLl]?\\b)"
+    - constant.null: "\\b(nil|nilptr)\\b"
+    - symbol.operator: "([.:;,+*|=!\\%]|<|>|/|-|&)"
+    - symbol.brackets: "[(){}\\[\\]]"
+    - symbol: "(\\*|//|/|%|\\+|-|\\^|>|>=|<|<=|~=|=|[\\.]{2,3})"
+
+    - constant.string:
+        start: "\""
+        end: "\""
+        skip: "\\\\."
+        rules:
+            - constant.specialChar: "\\\\."
+
+    - constant.string:
+        start: "'"
+        end: "'"
+        skip: "\\\\."
+        rules:
+            - constant.specialChar: "\\\\."
+
+    - constant.string:
+        start: "\\[\\["
+        end: "\\]\\]"
+        rules:
+            - preproc: "#?#+"
+            - constant.specialChar: "\\\\."
+
+# support first few lengths of "long brackets" explicitly
+# brackets longer than that will give false positives
+
+    - constant.string:
+        start: "\\[=\\["
+        end: "\\]=\\]"
+        rules:
+            - constant.specialChar: "\\\\."
+
+    - constant.string:
+        start: "\\[==\\["
+        end: "\\]==\\]"
+        rules:
+            - constant.specialChar: "\\\\."
+
+    - constant.string:
+        start: "\\[===\\["
+        end: "\\]===\\]"
+        rules:
+            - constant.specialChar: "\\\\."
+
+    - constant.string:
+        start: "\\[====+\\["
+        end: "\\]====+\\]"
+        rules:
+            - constant.specialChar: "\\\\."
+
+    - special: "\\\\[0-7][0-7][0-7]|\\\\x[0-9a-fA-F][0-9a-fA-F]|\\\\[abefnrs]|(\\\\c|\\\\C-|\\\\M-|\\\\M-\\\\C-)."
+
+# support long brackets, same as with multiline strings
+
+    - preproc:
+        start: "#?#\\[?\\["
+        end: "\\]?\\]"
+        rules: []
+
+    - preproc:
+        start: "#?#\\[=\\["
+        end: "\\]=\\]"
+        rules: []
+
+    - preproc:
+        start: "#?#\\[==\\["
+        end: "\\]==\\]"
+        rules: []
+
+    - preproc:
+        start: "#?#\\[===\\["
+        end: "\\]===\\]"
+        rules: []
+
+    - preproc:
+        start: "#?#\\[====+\\["
+        end: "\\]====+\\]"
+        rules: []
+
+    - preproc: "#?#"
+
+    - comment.block:
+        start: "\\-\\-\\[\\["
+        end: "\\]\\]"
+        rules:
+            - todo: "(TODO|NOTE|FIXME):?"
+
+    - comment.block:
+        start: "\\-\\-\\[=\\["
+        end: "\\]=\\]"
+        rules:
+            - todo: "(TODO|NOTE|FIXME):?"
+
+    - comment.block:
+        start: "\\-\\-\\[==\\["
+        end: "\\]==\\]"
+        rules:
+            - todo: "(TODO|NOTE|FIXME):?"
+
+    - comment.block:
+        start: "\\-\\-\\[===\\["
+        end: "\\]===\\]"
+        rules:
+            - todo: "(TODO|NOTE|FIXME):?"
+
+    - comment.block:
+        start: "\\-\\-\\[====+\\["
+        end: "\\]====+\\]"
+        rules:
+            - todo: "(TODO|NOTE|FIXME):?"
+
+# this has to go after block comment or block comment does not work
+
+    - comment: 
+        start: "\\-\\-"
+        end: "$"
+        rules:
+            - todo: "(TODO|NOTE|FIXME):?"

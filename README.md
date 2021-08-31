@@ -14,5 +14,5 @@ Or from within Micro (a restart is needed after the instalation):
 ```
 Or manually install the plugin by cloning the repository to your Micro `plug` directory:
 ```bash
-$ git clone https://github.com/leapofazzam123/micro-nelua-plugin
+$ git clone https://github.com/leapofazzam123/micro-nelua-plugin ~/.config/micro/plug/nelua
 ```
